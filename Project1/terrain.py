@@ -78,4 +78,8 @@ fig.colorbar(cp1)
 
 cp2 = ax[1].contour(x, y, z_tilde)
 fig.colorbar(cp2)
+
+
+cp3 = ax[2].contour(x,y,z_tilde_sklearn)
+fig.colorbar(cp3)
 plt.show()
