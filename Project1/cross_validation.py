@@ -34,7 +34,8 @@ def cross_validation(n, maxdegree, noise, n_folds, method=f.OLS, seed=130, lmbda
 
     polydegree = np.zeros(maxdegree)
     MSE_mean = np.zeros(maxdegree)
-    MSE_mean_sklearn = np.zeros(maxdegree)
+    MSE_mean_ridge_sklearn = np.zeros(maxdegree)
+    MSE_mean_lasso_sklearn = np.zeros(maxdegree)
     R2Score_mean = np.zeros(maxdegree)
     R2Score_skl = np.zeros(maxdegree)
 
@@ -69,7 +70,11 @@ def cross_validation(n, maxdegree, noise, n_folds, method=f.OLS, seed=130, lmbda
         if method == f.Ridge:
             clf = skl.Ridge()
             scores = cross_val_score(clf, X_train, z_train, cv=n_folds, scoring='neg_mean_squared_error')
-            MSE_mean_sklearn[degree] = np.abs(np.mean(scores))
+            MSE_ridge_mean_sklearn[degree] = np.abs(np.mean(scores))
+        if method == f.Lasso:
+            clf = skl.Lasso()
+            scores = cross_val_score(clf, X_train, z_train, cv=n_folds, scoring ="neg_mean_squared_error")
+            MSE_lasso_mean_sklearn[degree] = np.abs(np.mean(scores))
 
         # cross validation
         for k in range(n_folds):
@@ -147,7 +152,7 @@ def cross_validation(n, maxdegree, noise, n_folds, method=f.OLS, seed=130, lmbda
 
 
 
-    return polydegree, MSE_mean, MSE_best, R2Score_skl, R2Score_mean, beta_best, best_degree, MSE_mean_sklearn
+    return polydegree, MSE_mean, MSE_best, R2Score_skl, R2Score_mean, beta_best, best_degree, MSE_mean_ols_sklearn, MSE_mean_lasso_sklearn
 
 if __name__ == '__main__':
     # initial data
@@ -159,8 +164,11 @@ if __name__ == '__main__':
     lmbda = 0
     seed = 130
 
-    polydegree, MSE_mean, MSE_best, R2Score_skl, R2Score_mean \
+    polydegree, MSE_mean, MSE_best, R2Score_skl, R2Score_mean, beta_best, best_degree, MSE_mean_ols_sklearn, MSE_mean_lasso_sklearn \
         = cross_validation(n, maxdegree, noise, n_folds, method, seed, lmbda)
+    polydegree, MSE_mean, MSE_best, R2Score_skl, R2Score_mean, beta_best, best_degree, MSE_mean_ols_sklearn, MSE_mean_lasso_sklearn \
+        = cross_validation(n, maxdegree, noise, n_folds, method, seed, lmbda)
+
     plt.plot(polydegree, MSE_mean)
     plt.show()
 
